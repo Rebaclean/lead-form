@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rebaclean — Request Our Pricelist</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --emerald: #00A86B;
+    --emerald-dark: #007A4D;
+    --emerald-light: #E6F7F1;
+    --cream: #FDFAF5;
+    --ink: #0D1F17;
+    --mid: #4A6358;
+    --border: #C8DDD6;
+    --accent: #F4A928;
+    --white: #FFFFFF;
+    --error: #E53E3E;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── BACKGROUND TEXTURE ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(0,168,107,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(244,169,40,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER BAND ─── */
+  .header {
+    background: var(--ink);
+    color: var(--white);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--emerald), var(--accent), var(--emerald));
+  }
+
+  .header-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 24px 36px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .logo-mark {
+    width: 56px;
+    height: 56px;
+    background: var(--emerald);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: white;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 16px rgba(0,168,107,0.4);
+  }
+
+  .header-text h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 6vw, 48px);
+    letter-spacing: 2px;
+    line-height: 1;
+    color: white;
+  }
+
+  .header-text h1 span {
+    color: var(--emerald);
+  }
+
+  .header-text p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  /* ─── FORM CARD ─── */
+  .card {
+    max-width: 700px;
+    margin: 32px auto 60px;
+    padding: 0 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-shell {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 48px rgba(13,31,23,0.10), 0 1px 0 var(--border);
+    overflow: hidden;
+  }
+
+  /* ─── SECTION BLOCKS ─── */
+  .section {
+    padding: 28px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--emerald);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--emerald-light);
+  }
+
+  /* ─── GRID ─── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 520px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .section { padding: 22px 20px; }
+  }
+
+  /* ─── FIELDS ─── */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--mid);
+    text-transform: uppercase;
+  }
+
+  label .opt {
+    font-weight: 300;
+    text-transform: none;
+    color: #9BADA6;
+    margin-left: 4px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--emerald);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0,168,107,0.12);
+  }
+
+  input::placeholder { color: #B0C4BC; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A6358' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  /* ─── CHIPS ─── */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .chip-input { display: none; }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 50px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    background: var(--cream);
+    user-select: none;
+  }
+
+  .chip:hover {
+    border-color: var(--emerald);
+    color: var(--emerald-dark);
+    background: var(--emerald-light);
+  }
+
+  .chip .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    transition: all 0.18s ease;
+    flex-shrink: 0;
+  }
+
+  .chip-input:checked + .chip {
+    background: var(--emerald);
+    border-color: var(--emerald);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,168,107,0.3);
+  }
+
+  .chip-input:checked + .chip .dot {
+    background: white;
+    border-color: white;
+  }
+
+  /* ─── DELIVERY OPTIONS ─── */
+  .delivery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  @media (max-width: 400px) {
+    .delivery-grid { grid-template-columns: 1fr; }
+  }
+
+  .delivery-input { display: none; }
+
+  .delivery-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    background: var(--cream);
+  }
+
+  .delivery-card:hover {
+    border-color: var(--emerald);
+    background: var(--emerald-light);
+  }
+
+  .delivery-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .delivery-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--mid);
+  }
+
+  .delivery-check {
+    margin-left: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s ease;
+  }
+
+  .delivery-input:checked + .delivery-card {
+    border-color: var(--emerald);
+    background: var(--emerald-light);
+  }
+
+  .delivery-input:checked + .delivery-card .delivery-label {
+    color: var(--emerald-dark);
+    font-weight: 600;
+  }
+
+  .delivery-input:checked + .delivery-card .delivery-check {
+    background: var(--emerald);
+    border-color: var(--emerald);
+  }
+
+  .delivery-input:checked + .delivery-card .delivery-check::after {
+    content: '✓';
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    padding: 28px 32px;
+    background: var(--ink);
+  }
+
+  @media (max-width: 520px) {
+    .cta-section { padding: 22px 20px; }
+  }
+
+  .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .submit-btn {
+    flex: 1;
+    min-width: 200px;
+    padding: 16px 32px;
+    background: var(--emerald);
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 20px rgba(0,168,107,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .submit-btn:hover {
+    background: var(--emerald-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 28px rgba(0,168,107,0.5);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  .submit-btn svg { width: 18px; height: 18px; }
+
+  .privacy-note {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.5;
+    flex: 1;
+    min-width: 180px;
+  }
+
+  /* ─── SUCCESS STATE ─── */
+  .success-overlay {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 32px;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--emerald-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    animation: pop 0.4s ease;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  .success-overlay h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--ink);
+  }
+
+  .success-overlay p {
+    font-size: 14px;
+    color: var(--mid);
+    max-width: 320px;
+    line-height: 1.6;
+  }
+
+  .reset-btn {
+    margin-top: 8px;
+    padding: 10px 24px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover {
+    border-color: var(--emerald);
+    color: var(--emerald);
+  }
+
+  /* ─── VALIDATION ─── */
+  .field input.invalid,
+  .field select.invalid {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(229,62,62,0.1);
+  }
+
+  .err-msg {
+    font-size: 11.5px;
+    color: var(--error);
+    display: none;
+  }
+
+  /* ─── FOOTER TAG ─── */
+  .footer-tag {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #9BADA6;
+    letter-spacing: 0.5px;
+  }
+
+  .footer-tag strong { color: var(--emerald); }
+
+  /* ─── ANIMATIONS ─── */
+  .section { animation: fadeUp 0.4s ease both; }
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.15s; }
+  .section:nth-child(4) { animation-delay: 0.2s; }
+  .section:nth-child(5) { animation-delay: 0.25s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-mark">RC</div>
+    <div class="header-text">
+      <h1>REBA<span>CLEAN</span></h1>
+      <p>Request our product pricelist — fill in your details below<br>and we'll send it straight to you.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CARD -->
+<div class="card">
+  <div class="form-shell">
+
+    <!-- FORM -->
+    <form id="mainForm" novalidate>
+
+      <!-- 01 CONTACT DETAILS -->
+      <div class="section">
+        <div class="section-label">01 &nbsp;Contact Details</div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="firstName">First Name <span class="opt"></span></label>
+            <input type="text" id="firstName" name="firstName" placeholder="e.g. Thabo" autocomplete="given-name" required>
+            <span class="err-msg" id="err-firstName">Please enter your first name</span>
+          </div>
+          <div class="field">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" placeholder="e.g. Mokoena" autocomplete="family-name" required>
+            <span class="err-msg" id="err-lastName">Please enter your last name</span>
+          </div>
+          <div class="field">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="e.g. 071 234 5678" autocomplete="tel" required>
+            <span class="err-msg" id="err-phone">Enter a valid SA phone number</span>
+          </div>
+          <div class="field">
+            <label for="email">Email Address <span class="opt">(optional)</span></label>
+            <input type="email" id="email" name="email" placeholder="e.g. thabo@email.com" autocomplete="email">
+            <span class="err-msg" id="err-email">Enter a valid email address</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 BUSINESS INFO -->
+      <div class="section">
+        <div class="section-label">02 &nbsp;Business / Location Info</div>
+        <div class="grid-2">
+          <div class="field" style="grid-column: 1/-1;">
+            <label for="business">Business / Company Name <span class="opt">(optional)</span></label>
+            <input type="text" id="business" name="business" placeholder="e.g. Mokoena Tavern">
+          </div>
+          <div class="field">
+            <label for="area">Area / Suburb</label>
+            <input type="text" id="area" name="area" placeholder="e.g. Seshego, Polokwane" required>
+            <span class="err-msg" id="err-area">Please enter your area</span>
+          </div>
+          <div class="field">
+            <label for="customerType">Customer Type</label>
+            <select id="customerType" name="customerType" required>
+              <option value="" disabled selected>Select type...</option>
+              <option value="household">🏠 Household</option>
+              <option value="spaza">🛒 Spaza Shop</option>
+              <option value="small-business">💼 Small Business</option>
+              <option value="restaurant">🍽️ Restaurant / Takeaway</option>
+              <option value="school">🏫 School</option>
+              <option value="church">⛪ Church / Community Org.</option>
+              <option value="industrial">🏭 Industrial / Factory</option>
+              <option value="other">✳️ Other</option>
+            </select>
+            <span class="err-msg" id="err-customerType">Please select a customer type</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 PRODUCTS OF INTEREST -->
+      <div class="section">
+        <div class="section-label">03 &nbsp;Products of Interest</div>
+        <div class="chips">
+          <input type="checkbox" class="chip-input" id="p1" name="products" value="Household Detergent">
+          <label class="chip" for="p1"><span class="dot"></span>Household Detergent</label>
+
+          <input type="checkbox" class="chip-input" id="p2" name="products" value="Small Business Detergent">
+          <label class="chip" for="p2"><span class="dot"></span>Small Business Detergent</label>
+
+          <input type="checkbox" class="chip-input" id="p3" name="products" value="School Detergent">
+          <label class="chip" for="p3"><span class="dot"></span>School Detergent</label>
+
+          <input type="checkbox" class="chip-input" id="p4" name="products" value="Industrial Detergent">
+          <label class="chip" for="p4"><span class="dot"></span>Industrial Detergent</label>
+
+          <input type="checkbox" class="chip-input" id="p5" name="products" value="Pine Gel">
+          <label class="chip" for="p5"><span class="dot"></span>Pine Gel</label>
+
+          <input type="checkbox" class="chip-input" id="p6" name="products" value="Dishwashing Liquid">
+          <label class="chip" for="p6"><span class="dot"></span>Dishwashing Liquid</label>
+
+          <input type="checkbox" class="chip-input" id="p7" name="products" value="Thick Bleach">
+          <label class="chip" for="p7"><span class="dot"></span>Thick Bleach</label>
+
+          <input type="checkbox" class="chip-input" id="p8" name="products" value="Hand Cleaner">
+          <label class="chip" for="p8"><span class="dot"></span>Hand Cleaner</label>
+        </div>
+        <span class="err-msg" id="err-products" style="display:none; margin-top:10px;">Please select at least one product</span>
+      </div>
+
+      <!-- 04 PREFERRED DELIVERY -->
+      <div class="section">
+        <div class="section-label">04 &nbsp;Send Pricelist Via</div>
+        <div class="delivery-grid">
+          <div>
+            <input type="radio" class="delivery-input" id="d-whatsapp" name="delivery" value="WhatsApp" required>
+            <label class="delivery-card" for="d-whatsapp">
+              <span class="delivery-icon">💬</span>
+              <span class="delivery-label">WhatsApp</span>
+              <span class="delivery-check"></span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" class="delivery-input" id="d-email" name="delivery" value="Email">
+            <label class="delivery-card" for="d-email">
+              <span class="delivery-icon">📧</span>
+              <span class="delivery-label">Email</span>
+              <span class="delivery-check"></span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" class="delivery-input" id="d-inperson" name="delivery" value="In-Person">
+            <label class="delivery-card" for="d-inperson">
+              <span class="delivery-icon">🤝</span>
+              <span class="delivery-label">In-Person</span>
+              <span class="delivery-check"></span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" class="delivery-input" id="d-phone" name="delivery" value="Phone Call">
+            <label class="delivery-card" for="d-phone">
+              <span class="delivery-icon">📞</span>
+              <span class="delivery-label">Phone Call</span>
+              <span class="delivery-check"></span>
+            </label>
+          </div>
+        </div>
+        <span class="err-msg" id="err-delivery" style="display:none; margin-top:10px;">Please choose how to receive the pricelist</span>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-section">
+        <div class="cta-row">
+          <button type="submit" class="submit-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            SEND MY REQUEST
+          </button>
+          <p class="privacy-note">Your details are used only to send your pricelist. We do not share your information with third parties.</p>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-icon">✅</div>
+      <h2>Request Received!</h2>
+      <p>Thank you! We'll send your Rebaclean pricelist shortly via your preferred method.</p>
+      <button class="reset-btn" onclick="resetForm()">Submit another request</button>
+    </div>
+
+  </div>
+
+  <p class="footer-tag">Rebaclean — Manufactured in <strong>Seshego, Limpopo</strong> &nbsp;|&nbsp; Quality Cleaning Chemicals</p>
+</div>
+
+<script>
+  const form = document.getElementById('mainForm');
+  const successOverlay = document.getElementById('successOverlay');
+
+  // ── SUBMISSIONS LOG (in-memory) ──
+  const submissions = [];
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    // Collect data
+    const data = {
+      timestamp: new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' }),
+      firstName: v('firstName'),
+      lastName: v('lastName'),
+      phone: v('phone'),
+      email: v('email') || '—',
+      business: v('business') || '—',
+      area: v('area'),
+      customerType: v('customerType'),
+      products: [...document.querySelectorAll('input[name="products"]:checked')].map(c => c.value).join(', ') || '—',
+      delivery: (document.querySelector('input[name="delivery"]:checked') || {}).value || '—',
+    };
+
+    submissions.push(data);
+    console.table(data); // For field rep to review on their device
+
+    // Show success
+    form.style.display = 'none';
+    successOverlay.style.display = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  function v(id) {
+    return document.getElementById(id).value.trim();
+  }
+
+  function validate() {
+    let ok = true;
+
+    // Required text/select fields
+    const required = ['firstName','lastName','phone','area','customerType'];
+    required.forEach(id => {
+      const el = document.getElementById(id);
+      const err = document.getElementById('err-' + id);
+      if (!el.value.trim()) {
+        el.classList.add('invalid');
+        if (err) err.style.display = 'block';
+        ok = false;
+      } else {
+        el.classList.remove('invalid');
+        if (err) err.style.display = 'none';
+      }
+    });
+
+    // Phone validation (SA-ish)
+    const phone = document.getElementById('phone');
+    const phoneClean = phone.value.replace(/\s/g,'');
+    if (phone.value.trim() && !/^[\+0][\d\s\-]{8,14}$/.test(phone.value)) {
+      phone.classList.add('invalid');
+      document.getElementById('err-phone').style.display = 'block';
+      ok = false;
+    }
+
+    // Email (optional but validated if filled)
+    const email = document.getElementById('email');
+    const emailErr = document.getElementById('err-email');
+    if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+      email.classList.add('invalid');
+      emailErr.style.display = 'block';
+      ok = false;
+    } else {
+      email.classList.remove('invalid');
+      emailErr.style.display = 'none';
+    }
+
+    // At least one product
+    const anyProduct = document.querySelectorAll('input[name="products"]:checked').length > 0;
+    document.getElementById('err-products').style.display = anyProduct ? 'none' : 'block';
+    if (!anyProduct) ok = false;
+
+    // Delivery method
+    const anyDelivery = document.querySelector('input[name="delivery"]:checked');
+    document.getElementById('err-delivery').style.display = anyDelivery ? 'none' : 'block';
+    if (!anyDelivery) ok = false;
+
+    // Scroll to first error
+    if (!ok) {
+      const firstInvalid = document.querySelector('.invalid, .err-msg[style*="block"]');
+      if (firstInvalid) firstInvalid.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+
+    return ok;
+  }
+
+  // Remove invalid state on input
+  document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', () => {
+      el.classList.remove('invalid');
+      const err = document.getElementById('err-' + el.id);
+      if (err) err.style.display = 'none';
+    });
+  });
+
+  function resetForm() {
+    form.reset();
+    form.style.display = '';
+    successOverlay.style.display = 'none';
+    document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+    document.querySelectorAll('.err-msg').forEach(el => el.style.display = 'none');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
